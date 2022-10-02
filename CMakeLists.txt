@@ -53,24 +53,64 @@ else (TINYGLTF_HEADER_ONLY)
           )
 endif (TINYGLTF_HEADER_ONLY)
 
-if (TINYGLTF_INSTALL)
+# if (TINYGLTF_INSTALL)
+# 
+#   # Do not install .lib even if !TINYGLTF_HEADER_ONLY
+#   
+#   INSTALL ( FILES
+#     json.hpp
+#     stb_image.h
+#     stb_image_write.h
+#     tiny_gltf.h
+#     ${TINYGLTF_EXTRA_SOUECES}
+#     DESTINATION
+#     include
+#     )
+# 
+#   INSTALL ( FILES
+#     cmake/TinyGLTFConfig.cmake
+#     DESTINATION
+#     cmake
+#     )
+# 
+# endif(TINYGLTF_INSTALL)
 
-  # Do not install .lib even if !TINYGLTF_HEADER_ONLY
+# Corona install configuration
 
-  INSTALL ( FILES
-    json.hpp
+add_library(tinyglTF
+tiny_gltf.cc
+)
+
+set(HEADER_FILES
     stb_image.h
     stb_image_write.h
+    json.hpp
     tiny_gltf.h
-    ${TINYGLTF_EXTRA_SOUECES}
-    DESTINATION
-    include
     )
 
-  INSTALL ( FILES
-    cmake/TinyGLTFConfig.cmake
-    DESTINATION
-    cmake
-    )
+set(MYGE_EXTERNAL_ROOT ${PROJECT_BINARY_DIR}/../../${MYGE_TARGET_PLATFORM})
+message("MYGE_EXTERNAL_ROOT:" ${MYGE_EXTERNAL_ROOT})
 
-endif(TINYGLTF_INSTALL)
+set_target_properties(tinyglTF
+    PROPERTIES PUBLIC_HEADER "${HEADER_FILES}"
+)
+
+install(TARGETS tinyglTF
+    PUBLIC_HEADER DESTINATION ${MYGE_EXTERNAL_ROOT}/include/tinyglTF
+    ARCHIVE DESTINATION ${MYGE_EXTERNAL_ROOT}/lib/Debug
+    CONFIGURATIONS Debug
+)
+
+install(TARGETS tinyglTF
+    ARCHIVE DESTINATION ${MYGE_EXTERNAL_ROOT}/lib/Release
+    CONFIGURATIONS Release
+)
+
+if(${MSVC})
+    install(FILES ${PROJECT_BINARY_DIR}/Debug/tinyglTF.pdb
+        DESTINATION ${MYGE_EXTERNAL_ROOT}/lib/Debug
+        CONFIGURATIONS Debug
+        )
+endif(${MSVC})
+
+
