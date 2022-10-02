@@ -88,8 +88,13 @@ set(HEADER_FILES
     tiny_gltf.h
     )
 
+IF(${UNIX})
+    set(MYGE_TARGET_PLATFORM "Linux")
+ELSEIF(${WIN32})
+    set(MYGE_TARGET_PLATFORM "Windows")
+ENDIF(${UNIX})
+
 set(MYGE_EXTERNAL_ROOT ${PROJECT_BINARY_DIR}/../../${MYGE_TARGET_PLATFORM})
-message("MYGE_EXTERNAL_ROOT:" ${MYGE_EXTERNAL_ROOT})
 
 set_target_properties(tinyglTF
     PROPERTIES PUBLIC_HEADER "${HEADER_FILES}"
